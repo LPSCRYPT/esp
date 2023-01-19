@@ -1,3 +1,13 @@
+# esp
+
+The **E**xtensible **S**ignaling **P**rimitive is a framework for building modular *(consisting of subcomponents with well-defined interfaces and functions that can be consumed independently of each other)* and composable *(the degree to which these subcomponents can be combined to form more complex systems)* signaling systems. A signal is simply a data input which may result in changes to the state of the system being signalled. In this regard signaling systems operate as a state machine. In fact, a signaling system taking place within atomic blockchain transactions is a well defined state machine.
+
+**esp** is a state management system designed for onchain signal processing. DAOs can use it to quickly implement new voting schemes, treasury management applications, and proposal voting. **esp** leverages the robust MUD state management framework to compartmentalize signal inputs into discrete storage mappings in `components`, mutated by `systems`, the wiring together of which allows for anyone to modularly compose their own signal `Stream` easily and without needing to switch over to a new set of DAO tooling. Existing frameworks can be wrapped within signal `Streams`.
+
+The signal `Stream` is an abstraction built atop MUD which routes all incoming signals through a `SignalRouter`. `Streams` can be instantiated permisionlessly and whitelist various `systems` which define the mutations which will occur to their inputs. Additionally, a `UserRegistry` is defined for each signal `Stream` which determines who is allowed to signal within a particular `Stream`. 
+
+Relevant code for **esp** is in `/packages/solecs/src/esp-contracts`. 
+
 ---
 icon: public/logo512.png
 ---
