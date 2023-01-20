@@ -15,11 +15,7 @@ contract DxDAOMemberRegistrySystem is BaseMemberRegistrySystem {
   // address of the DxDAOMemberPointsRegistry to lookup member validity
   address registry;
 
-  constructor(
-    address _registry,
-    IWorld _world,
-    address _components
-  ) BaseMemberRegistrySystem(_world, address(0)) {
+  constructor(address _registry, IWorld _world) BaseMemberRegistrySystem(_world, address(0)) {
     registry = _registry;
   }
 

@@ -31,8 +31,7 @@ contract DxDAOMemberPointsSystem is System {
     address _registry,
     address _DxDAOSignalStoreComponent,
     address _DxDAOMemberAvailablePointsComponent,
-    IWorld _world,
-    address _components
+    IWorld _world
   ) System(_world, address(0)) {
     store = _DxDAOSignalStoreComponent;
     /**@dev use indexer instead? */
@@ -54,13 +53,24 @@ contract DxDAOMemberPointsSystem is System {
 
     // add or remove points
 
+    // if uninitialized, return will be an empty bytes array
     UserPoints memory returnArg = IDxDAOSignalStoreComponent(store).getValue(
       uint256(keccak256(abi.encode(stream, abi.encode(tx.origin, signal))))
     );
 
-    uint256 availablePoints = IDxDAOMemberAvailablePointsComponent(available).getValue(
+    bytes memory availablePointsBytes = IComponent(available).getRawValue(
       uint256(keccak256(abi.encode(stream, abi.encode(tx.origin))))
     );
+
+    uint256 availablePoints;
+
+    if (availablePointsBytes.length == 0) {
+      // initialize available points as total points
+      availablePoints = totalPoints;
+      router.execute(abi.encode(available, abi.encode(tx.origin), abi.encode((availablePoints))));
+    } else {
+      availablePoints = abi.decode(availablePointsBytes, (uint256));
+    }
 
     if (add) {
       // add points at signal string
@@ -84,6 +94,7 @@ contract DxDAOMemberPointsSystem is System {
       availablePoints += points;
     }
     router.execute(abi.encode(store, abi.encode(tx.origin, signal), abi.encode(returnArg)));
-    router.execute(abi.encode(available, abi.encode((availablePoints))));
+    router.execute(abi.encode(available, abi.encode(tx.origin), abi.encode((availablePoints))));
+    routerStream.endCall();
   }
 }

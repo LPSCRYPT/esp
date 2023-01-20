@@ -13,7 +13,7 @@ import { IDxDAOMemberAvailablePointsComponent } from "./interfaces/IDxDAOMemberA
 uint256 constant ID = uint256(keccak256("ESP.component.DxDAOMemberAvailablePointsComponent"));
 
 contract DxDAOMemberAvailablePointsComponent is Component, IDxDAOMemberAvailablePointsComponent {
-  constructor(address _router, address _world) Component(world, ID) {
+  constructor(address _router, address _world) Component(_world, ID) {
     // Registers component update permissions to only the SignalRouterSystem
     authorizeWriter(_router);
     unauthorizeWriter(msg.sender);
@@ -24,7 +24,13 @@ contract DxDAOMemberAvailablePointsComponent is Component, IDxDAOMemberAvailable
   }
 
   function getValue(uint256 entity) public view returns (uint256) {
-    return abi.decode(getRawValue(entity), (uint256));
+    // Added check to return empty struct on uninitialized case
+    bytes memory raw = getRawValue(entity);
+    if (raw.length == 0) {
+      return 0;
+    } else {
+      return abi.decode(getRawValue(entity), (uint256));
+    }
   }
 
   function getSchema() public pure override returns (string[] memory keys, LibTypes.SchemaValue[] memory values) {

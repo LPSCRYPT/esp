@@ -17,7 +17,7 @@ import { UserPoints } from "./lib/UserPoints.sol";
 uint256 constant ID = uint256(keccak256("ESP.component.DxDAOSignalStore"));
 
 contract DxDAOSignalStoreComponent is Component, IDxDAOSignalStoreComponent {
-  constructor(address _router, address _world) Component(world, ID) {
+  constructor(address _router, address _world) Component(_world, ID) {
     // Registers component update permissions to only the SignalRouterSystem
     authorizeWriter(_router);
     unauthorizeWriter(msg.sender);
@@ -28,7 +28,14 @@ contract DxDAOSignalStoreComponent is Component, IDxDAOSignalStoreComponent {
   }
 
   function getValue(uint256 entity) public view returns (UserPoints memory) {
-    return abi.decode(getRawValue(entity), (UserPoints));
+    // Added check to return empty struct on uninitialized case
+    bytes memory raw = getRawValue(entity);
+    if (raw.length == 0) {
+      UserPoints memory U;
+      return U;
+    } else {
+      return abi.decode(getRawValue(entity), (UserPoints));
+    }
   }
 
   function getSchema() public pure override returns (string[] memory keys, LibTypes.SchemaValue[] memory values) {

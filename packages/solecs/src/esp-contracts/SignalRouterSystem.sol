@@ -69,18 +69,16 @@ contract SignalRouterSystem is System, ISignalRouterSystem {
     /**
         @notice _reentrancyCheck helps to determine if a user is the initial caller. This prevents malicious systems calling the router directly to mutate the state for a previously logged _streamCall. Should ensure that all execute calls must initiate from an end user calling this router - not from a user calling a system directly
         */
-    bool _reentrancyCheck;
 
     if (tx.origin == msg.sender) {
       // executes if the caller is an account
-      _reentrancyCheck = true;
       // currently prevents external contract entities / abstractions from calling this contract
       (uint256 _stream, address _system, bytes memory _arguments) = abi.decode(arguments, (uint256, address, bytes));
 
       // Checks is user is valid for stream
       address MemberRegistrySystemAddress = RouterSMIC.getValue(_stream);
       require(MemberRegistrySystemAddress != address(0), "No MemberRegistrySystem found at address");
-      require(IMemberRegistrySystem(MemberRegistrySystemAddress).executeTyped(_stream, msg.sender));
+      require(IMemberRegistrySystem(MemberRegistrySystemAddress).executeTyped(_stream, msg.sender), "Not valid member");
 
       // Checks if system to call is valid for stream
       require(
@@ -95,7 +93,6 @@ contract SignalRouterSystem is System, ISignalRouterSystem {
       ISystem(_system).execute(_arguments);
     } else {
       // executes if the caller is another contract
-      require(_reentrancyCheck, "Attempted malicious systems update");
 
       (address _component, bytes memory keys, bytes memory value) = abi.decode(arguments, (address, bytes, bytes));
 
@@ -113,6 +110,17 @@ contract SignalRouterSystem is System, ISignalRouterSystem {
      */
   function viewStreamCall() public view returns (uint256) {
     return _streamCall;
+  }
+
+  /**
+  @dev Prevents malicious systems directly calling router to update another stream's state
+  @dev You systems MUST implement this function after their last state update, or risk malicious state mutations!
+  @dev For this reason, stream ID 0 is always unsafe and should never be used
+  @dev Add check to make sure that streamID 0 can never be logged or called
+   */
+  function endCall() public {
+    require(RouterSSIC.getValue(uint256(keccak256(abi.encode(_streamCall, msg.sender)))));
+    delete _streamCall;
   }
 
   // /** Expects packed encoding */
