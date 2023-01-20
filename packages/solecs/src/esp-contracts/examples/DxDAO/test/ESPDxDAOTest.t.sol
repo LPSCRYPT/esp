@@ -91,6 +91,7 @@ contract ESPDxDAOTest is DSTestPlus {
     console.log("ORIGIN ", tx.origin);
     vm.prank(0x1804c8AB1F12E6bbf3894d4083f33e07309d1f38);
     console.log("ORIGIN ", msg.sender);
+    // deposit 60 points into pepe
     router.execute(abi.encode(1, DxDmps, abi.encode(60, "pepe", true)));
     uint256 _val = DxDmapc.getValue(uint256(keccak256(abi.encode(1, abi.encode(tx.origin)))));
     assertEq(_val, 40, "Available points error");
@@ -99,6 +100,29 @@ contract ESPDxDAOTest is DSTestPlus {
     assertEq(_u.user, tx.origin, "Address err");
     assertEq(_u.signal, "pepe", "Signal err");
     assertEq(_u.pointsString, 60, "Points string err");
+    assertEq(_u.totalPoints, 100, "Total points err");
+
+    // withdraw 25 points from pepe and deposit 10 into wojak
+    vm.prank(0x1804c8AB1F12E6bbf3894d4083f33e07309d1f38);
+    router.execute(abi.encode(1, DxDmps, abi.encode(25, "pepe", false)));
+    uint256 _val2 = DxDmapc.getValue(uint256(keccak256(abi.encode(1, abi.encode(tx.origin)))));
+    assertEq(_val2, 65, "Available points error");
+    _u = DxDssc.getValue(uint256(keccak256(abi.encode(1, abi.encode(tx.origin, "pepe")))));
+    assertEq(_u.stream, 1, "Stream3 err");
+    assertEq(_u.user, tx.origin, "Address err");
+    assertEq(_u.signal, "pepe", "Signal err");
+    assertEq(_u.pointsString, 35, "Points string err");
+    assertEq(_u.totalPoints, 100, "Total points err");
+
+    vm.prank(0x1804c8AB1F12E6bbf3894d4083f33e07309d1f38);
+    router.execute(abi.encode(1, DxDmps, abi.encode(10, "wojak", true)));
+    uint256 _val3 = DxDmapc.getValue(uint256(keccak256(abi.encode(1, abi.encode(tx.origin)))));
+    assertEq(_val3, 55, "Available points error");
+    _u = DxDssc.getValue(uint256(keccak256(abi.encode(1, abi.encode(tx.origin, "wojak")))));
+    assertEq(_u.stream, 1, "Stream3 err");
+    assertEq(_u.user, tx.origin, "Address err");
+    assertEq(_u.signal, "wojak", "Signal err");
+    assertEq(_u.pointsString, 10, "Points string err");
     assertEq(_u.totalPoints, 100, "Total points err");
   }
 }
