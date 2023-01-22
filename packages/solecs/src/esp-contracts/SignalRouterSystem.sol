@@ -114,7 +114,7 @@ contract SignalRouterSystem is System, ISignalRouterSystem {
 
   /**
   @dev Prevents malicious systems directly calling router to update another stream's state
-  @dev You systems MUST implement this function after their last state update, or risk malicious state mutations!
+  @dev Your systems MUST implement this function after their last state update, or risk malicious state mutations!
   @dev For this reason, stream ID 0 is always unsafe and should never be used
   @dev Add check to make sure that streamID 0 can never be logged or called
    */
@@ -122,21 +122,4 @@ contract SignalRouterSystem is System, ISignalRouterSystem {
     require(RouterSSIC.getValue(uint256(keccak256(abi.encode(_streamCall, msg.sender)))));
     delete _streamCall;
   }
-
-  // /** Expects packed encoding */
-  // function decodeAddress(bytes memory _data) private pure returns(address addr) {
-  //     assembly {
-  //     addr := mload(add(_data,20))
-  //     }
-  // }
-
-  /** Expects packed encoding */
-  // function decodeBool(bytes memory _data) private pure returns (bool b){
-  //     assembly {
-  //         // Load the length of data (first 32 bytes)
-  //         let len := mload(_data)
-  //         // Load the data after 32 bytes, so add 0x20
-  //         b := mload(add(_data, 0x20))
-  //     }
-  // }
 }
