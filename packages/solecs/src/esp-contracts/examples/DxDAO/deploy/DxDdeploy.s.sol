@@ -2,8 +2,8 @@
 
 pragma solidity ^0.8.17;
 
-import "forge-std/Script.sol";
-import { Vm } from "forge-std/Vm.sol";
+import { Script } from "forge-std/Script.sol";
+// import { Vm } from "forge-std/Vm.sol";
 import { console } from "forge-std/console.sol";
 
 // MUD Core
@@ -22,7 +22,7 @@ import { DxDAOSignalStoreComponent } from "../DxDAOSignalStoreComponent.sol";
 import { UserPoints } from "../lib/UserPoints.sol";
 
 contract DxDdeploy is Script {
-  Vm internal immutable vm = Vm(HEVM_ADDRESS);
+  // Vm internal immutable vm = Vm(HEVM_ADDRESS);
 
   World internal world;
   address internal worldAddress;
@@ -83,6 +83,15 @@ contract DxDdeploy is Script {
     // DxDmpr.addUsers(1, _a, _p);
     // UserPoints memory _t = DxDssc.getValue(uint256(keccak256(abi.encode(1, abi.encode(0x1804c8AB1F12E6bbf3894d4083f33e07309d1f38, "pepe")))));
     // console.log("TEST! ",_t.stream);
+    console.log("worldAddress ", worldAddress);
+    console.log("routerAddress ", routerAddress);
+    console.log("sorAddress ", sorAddress);
+    console.log("DxDmprAddress ", DxDmprAddress);
+    console.log("DxDmrsAddress ", DxDmrsAddress);
+    console.log("DxDmapcAddress ", DxDmapcAddress);
+    console.log("DxDsscAddress ", DxDsscAddress);
+    console.log("DxDmpsAddress ", DxDmpsAddress);
+
     vm.stopBroadcast();
   }
 
