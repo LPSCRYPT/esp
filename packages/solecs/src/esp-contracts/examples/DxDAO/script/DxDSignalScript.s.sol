@@ -21,83 +21,32 @@ import { DxDAOMemberRegistrySystem } from "../DxDAOMemberRegistrySystem.sol";
 import { DxDAOSignalStoreComponent } from "../DxDAOSignalStoreComponent.sol";
 import { UserPoints } from "../lib/UserPoints.sol";
 
-contract DxDdeploy is Script {
+contract DxDSignalScript is Script {
   // Vm internal immutable vm = Vm(HEVM_ADDRESS);
 
-  World internal world;
-  address internal worldAddress;
-  SignalRouterSystem internal router;
-  address internal routerAddress;
-  StreamOwnerRegistry internal sor;
-  address internal sorAddress;
-  DxDAOMemberPointsRegistry internal DxDmpr;
-  address internal DxDmprAddress;
-  DxDAOMemberRegistrySystem internal DxDmrs;
-  address internal DxDmrsAddress;
-  DxDAOMemberAvailablePointsComponent internal DxDmapc;
-  address internal DxDmapcAddress;
-  DxDAOSignalStoreComponent internal DxDssc;
-  address internal DxDsscAddress;
-  DxDAOMemberPointsSystem internal DxDmps;
-  address internal DxDmpsAddress;
-
   function run() public {
-    // uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
-    // vm.startBroadcast(deployerPrivateKey);
+    uint256 deployerPrivateKey = vm.envUint("GOERLI_PRIVATE_KEY");
 
-    world = new World();
-    world.init();
-    worldAddress = address(world);
+    vm.startBroadcast(deployerPrivateKey);
 
-    router = new SignalRouterSystem(world);
-    routerAddress = address(router);
+    DxDAOMemberRegistrySystem reg = DxDAOMemberRegistrySystem(0x9E058C762547455eEB80e1460f47dB503c60c997);
 
-    sor = router.RouterSOR();
-    sorAddress = address(sor);
-    address[] memory _empty;
-    sor.streamRegister(1, _empty);
+    bytes memory valid = reg.execute(abi.encode(1, tx.origin));
 
-    DxDmpr = new DxDAOMemberPointsRegistry(sorAddress);
-    DxDmprAddress = address(DxDmpr);
+    console.log("Sender", tx.origin);
+    console.log("Valid", decodeBool(valid));
 
-    DxDmrs = new DxDAOMemberRegistrySystem(DxDmprAddress, world);
-    DxDmrsAddress = address(DxDmrs);
+    DxDAOMemberPointsRegistry memberpoints = DxDAOMemberPointsRegistry(0x104D7e73ba2CF955A813da67c37f5631aFc89619);
 
-    sor.mutateMemberRegistrySystem(1, DxDmrsAddress);
+    uint256 points = memberpoints.getUserPoints(1, tx.origin);
 
-    DxDmapc = new DxDAOMemberAvailablePointsComponent(routerAddress, worldAddress);
-    DxDmapcAddress = address(DxDmapc);
-    DxDssc = new DxDAOSignalStoreComponent(routerAddress, worldAddress);
-    DxDsscAddress = address(DxDssc);
+    console.log("Points ", points);
 
-    DxDmps = new DxDAOMemberPointsSystem(routerAddress, DxDmprAddress, DxDsscAddress, DxDmapcAddress, world);
-    DxDmpsAddress = address(DxDmps);
+    SignalRouterSystem router = SignalRouterSystem(0x44Fec79BaA6f6f9865bc61CB3566b56A57679A4e);
 
-    sor.addOrRemoveTopLevelSystem(1, DxDmpsAddress, true);
-    sor.addOrRemoveStreamSystem(1, DxDmpsAddress, true);
+    router.execute(abi.encode(1, 0x1Ee7B1baAAC58b05c84EBE42aBFf6bDE5Aa504d9, abi.encode(60, "pepe", true)));
 
-    uint256[] memory _p = new uint256[](1);
-    _p[0] = 100;
-    address[] memory _a = new address[](1);
-    _a[0] = 0x1804c8AB1F12E6bbf3894d4083f33e07309d1f38;
-    DxDmpr.addUsers(1, _a, _p);
-    UserPoints memory _t = DxDssc.getValue(
-      uint256(keccak256(abi.encode(1, abi.encode(0x1804c8AB1F12E6bbf3894d4083f33e07309d1f38, "pepe"))))
-    );
-    // console.log("TEST! ",_t.stream);
-    console.log("worldAddress ", worldAddress);
-    console.log("routerAddress ", routerAddress);
-    console.log("sorAddress ", sorAddress);
-    console.log("DxDmprAddress ", DxDmprAddress);
-    console.log("DxDmrsAddress ", DxDmrsAddress);
-    console.log("DxDmapcAddress ", DxDmapcAddress);
-    console.log("DxDsscAddress ", DxDsscAddress);
-    console.log("DxDmpsAddress ", DxDmpsAddress);
-
-    vm.prank(0x1804c8AB1F12E6bbf3894d4083f33e07309d1f38);
-    router.execute(abi.encode(1, DxDmps, abi.encode(60, "pepe", true)));
-
-    // vm.stopBroadcast();
+    vm.stopBroadcast();
   }
 
   // function testTemp() public {
@@ -143,4 +92,12 @@ contract DxDdeploy is Script {
   //     assertEq(_u.pointsString, 10, "Points string err");
   //     assertEq(_u.totalPoints, 100, "Total points err");
   //   }
+  function decodeBool(bytes memory _data) internal pure returns (bool b) {
+    assembly {
+      // Load the length of data (first 32 bytes)
+      let len := mload(_data)
+      // Load the data after 32 bytes, so add 0x20
+      b := mload(add(_data, 0x20))
+    }
+  }
 }

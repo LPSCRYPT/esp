@@ -7,3 +7,7 @@ verbosity = 1
 libs = ["../../node_modules"]
 src = "src"
 out = "out"
+[rpc_endpoints]
+goerli = "${GOERLI_RPC_URL}"
+[etherscan]
+goerli = { key = "${GOERLI_PRIVATE_KEY}" }
