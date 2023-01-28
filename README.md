@@ -11,3 +11,5 @@ This repo is currently an unaudited alpha build, while fit for testing do not bu
 Relevant code for **esp** is in `/packages/solecs/src/esp-contracts`.
 
 This repo is a fork of [MUD core](https://github.com/latticexyz/mud), and none of the code outside of `packages/solecs` is being used in the current implementation. However, the MUD framework has many tools which could be of use in future frontend and middleware integrations for **esp**.
+
+ ![System Diagram](https://i.imgur.com/Ckg24iQ.png)
