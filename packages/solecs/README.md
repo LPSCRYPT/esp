@@ -1,3 +1,6 @@
+note: add .env to this directory for forge commands
+before running commands from this directory, run `source .env`
+
 # solecs - Solidity Entity Component System
 
 `solecs` is a framework to build highly composable, extendable and maintainable on-chain Worlds.

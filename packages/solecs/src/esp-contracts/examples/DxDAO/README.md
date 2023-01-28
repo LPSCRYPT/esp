@@ -13,6 +13,30 @@ Emitted events must have all relevant information in their `bytes value`:
 5. String to which (de)signalling has occured
 6. If user is adding or withdrawing points in this transaction
 
+gnosis deployment
+World
+worldAddress 0x9dB2f20E541412292677aa43e8d09732f3998992
+SignalRouterSystem
+routerAddress 0x03A4eaC6a39D9ADAe045F23732f39D7791eF25e2
+StreamMemberIndexComponent
+smicAddress 0xc37B3e132Cb232e57c0399eBa10199eb4A19d1e1
+TopLevelSystemIndexComponent
+tlsicAddress 0x4bd10631CD2C286E6558f5c3370344A81C0e3a39
+StreamSystemIndexComponent
+ssicAddress 0x353Af9c8Ab281956fd7719Dd102c45F750572EbD
+StreamOwnerRegistry
+sorAddress 0xE9a4c197E7b085b8F75216383a0664d8D7908914
+DxDMemberPointsRegistry
+DxDmprAddress 0x5217eed75D81110E6b2F02D978113Dcf0d8000FD
+DxDMemberRegistrySystem
+DxDmrsAddress 0xfaC487b9dd7D58318e4c6cf4C9dA8476520B03b4
+DxDMemberAvailablePointsComponent
+DxDmapcAddress 0xb44FF26619792AC8ed4bC51db6838369072C89C1
+DxDSignalStoreComponent
+DxDsscAddress 0x544b8bff40b4ceFa62a69C5077d7c1d9Ff43cc23
+DxDMemberPointsSystem
+DxDmpsAddress 0xfc3DC29E55100d0839429eAF1D48e0C0Da338860
+
 georli deployment
 World
 worldAddress 0x5EF8AFa3DE8CAEdfa336Ea6D96328e5fb932F65C
@@ -37,7 +61,8 @@ DxDsscAddress 0x58A669942102665595EeDFC9AF7b98A3F0B147b6
 DxDMemberPointsSystem
 DxDmpsAddress 0x1Ee7B1baAAC58b05c84EBE42aBFf6bDE5Aa504d9
 
-cast send 0x104D7e73ba2CF955A813da67c37f5631aFc89619 "addUsers(uint256,uint256[],address[])" 1 "[100]" "[0xED1144847Ec1a08Fca702bDC4d6fb0a9c828F2d5]" --rpc-url $GOERLI_RPC_URL --private-key $GOERLI_PRIVATE_KEY
+add a user with points
+cast send --rpc-url $GOERLI_RPC_URL --private-key $GOERLI_PRIVATE_KEY 0x104D7e73ba2CF955A813da67c37f5631aFc89619 "addUsers(uint256,address[],uint256[])" 1 "[0x3514BE7b0471a937BDD39B1d22EF820ce1C90A2c]" "[120]"
 
 cast send 0x4658734bd2FD52468a964F0ACaDE68B6F78F0479 "streamRegister(uint256,address[])" 1 "[0x5ceb0a73C8e436315830cd64b3dA7d8404a1ceD7]" --rpc-url $GOERLI_RPC_URL --private-key $GOERLI_PRIVATE_KEY
 
@@ -45,27 +70,27 @@ cast send --rpc-url $GOERLI_RPC_URL --private-key $GOERLI_PRIVATE_KEY 0x44Fec79B
 
 forge script src/esp-contracts/examples/DxDAO/script/DxDSignalScript.s.sol:DxDSignalScript --rpc-url $GOERLI_RPC_URL --broadcast
 
+forge script src/esp-contracts/examples
+
 cast send --rpc-url $GOERLI_RPC_URL --private-key $GOERLI_PRIVATE_KEY 0x44Fec79BaA6f6f9865bc61CB3566b56A57679A4e "execute"
 
-cast send --rpc-url $GOERLI_RPC_URL --private-key $GOERLI_PRIVATE_KEY 0x104D7e73ba2CF955A813da67c37f5631aFc89619 "addUsers(uint256,uint256[],address[])" 1 "[100]" "[0x5ceb0a73C8e436315830cd64b3dA7d8404a1ceD7]"
-
-cast call --rpc-url $GOERLI_RPC_URL --private-key $GOERLI_PRIVATE_KEY 0x4658734bd2FD52468a964F0ACaDE68B6F78F0479 "validOwner(uint256,address)" 1 0x5ceb0a73C8e436315830cd64b3dA7d8404a1ceD7
+checks if address is a valid stream owner for stream number
+cast call --rpc-url $GOERLI_RPC_URL --private-key $GOERLI_PRIVATE_KEY 0x4658734bd2FD52468a964F0ACaDE68B6F78F0479 "validOwner(uint256,address)" 1 0xED1144847Ec1a08Fca702bDC4d6fb0a9c828F2d5
 
 abi-encode "execute()"
 
 cast --chain estimate 0x104D7e73ba2CF955A813da67c37f5631aFc89619 "addUsers()(uint256[],address[])" "[1]" "[0xED1144847Ec1a08Fca702bDC4d6fb0a9c828F2d5]"
 
-cast call --rpc-url $GOERLI_RPC_URL --private-key $GOERLI_PRIVATE_KEY 0x104D7e73ba2CF955A813da67c37f5631aFc89619 "getUserPoints(uint256,address)" 1 0x5ceb0a73C8e436315830cd64b3dA7d8404a1ceD7
+check how many points a user has on a stream
+cast call --rpc-url $GOERLI_RPC_URL --private-key $GOERLI_PRIVATE_KEY 0x104D7e73ba2CF955A813da67c37f5631aFc89619 "getUserPoints(uint256,address)" 1 0xED1144847Ec1a08Fca702bDC4d6fb0a9c828F2d5
 
 cast call --rpc-url $GOERLI_RPC_URL --private-key $GOERLI_PRIVATE_KEY 0xF1842A7cf7412629C8fc0FD1845c8AF5e7b105A3 "getValue(uint256)" 80233901236022004132281809751570228949350968616980246140348755947396907904581
 
 0x00000000000000000000000000000000000000000000000000000000000000010000000000000000000000001ee7b1baaac58b05c84ebe42abff6bde5aa504d9000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000003c00000000000000000000000000000000000000000000000000000000000000047065706500000000000000000000000000000000000000000000000000000000
 
-stonerocks$ forge verify-contract --constructor-args $(cast abi-encode "constructor(address)" 0x4658734bd2FD52468a964F0ACaDE68B6F78F0479) 0x104D7e73ba2CF955A813da67c37f5631aFc89619 DxDAOMemberPointsRegistry .src/esp-contracts/examples/DxDAO/DxDAOMemberPointsRegistry.sol:DxDAOMemberPointsRegistry $ETHERSCAN_KEY
+forge verify-contract --constructor-args $(cast abi-encode "constructor(address)" 0x4658734bd2FD52468a964F0ACaDE68B6F78F0479) 0x104D7e73ba2CF955A813da67c37f5631aFc89619 DxDAOMemberPointsRegistry .src/esp-contracts/examples/DxDAO/DxDAOMemberPointsRegistry.sol:DxDAOMemberPointsRegistry $ETHERSCAN_KEY
 
 https://rpc.ankr.com/eth_goerli
 
 oustanding issues:
 cannot verify contracts on etherscan do to multiple identical inherited imports
-cannot call certain state mutating functions
-comparison sign switched in dxdmrs, needs redeployment to add new stream owners

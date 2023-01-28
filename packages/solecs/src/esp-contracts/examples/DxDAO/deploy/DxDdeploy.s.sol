@@ -42,8 +42,8 @@ contract DxDdeploy is Script {
   address internal DxDmpsAddress;
 
   function run() public {
-    // uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
-    // vm.startBroadcast(deployerPrivateKey);
+    uint256 deployerPrivateKey = vm.envUint("GNOSIS_PRIVATE_KEY");
+    vm.startBroadcast(deployerPrivateKey);
 
     world = new World();
     world.init();
@@ -76,28 +76,45 @@ contract DxDdeploy is Script {
     sor.addOrRemoveTopLevelSystem(1, DxDmpsAddress, true);
     sor.addOrRemoveStreamSystem(1, DxDmpsAddress, true);
 
-    uint256[] memory _p = new uint256[](1);
-    _p[0] = 100;
-    address[] memory _a = new address[](1);
-    _a[0] = 0x1804c8AB1F12E6bbf3894d4083f33e07309d1f38;
-    DxDmpr.addUsers(1, _a, _p);
-    UserPoints memory _t = DxDssc.getValue(
-      uint256(keccak256(abi.encode(1, abi.encode(0x1804c8AB1F12E6bbf3894d4083f33e07309d1f38, "pepe"))))
-    );
+    // uint256[] memory _p = new uint256[](1);
+    // _p[0] = 100;
+    // address[] memory _a = new address[](1);
+    // _a[0] = 0x1804c8AB1F12E6bbf3894d4083f33e07309d1f38;
+    // DxDmpr.addUsers(1, _a, _p);
+    // UserPoints memory _t = DxDssc.getValue(
+    //   uint256(keccak256(abi.encode(1, abi.encode(0x1804c8AB1F12E6bbf3894d4083f33e07309d1f38, "pepe"))))
+    // );
     // console.log("TEST! ",_t.stream);
+    address smicAddress = address(router.RouterSMIC());
+    address tlsicAddress = address(router.RouterTLSIC());
+    address ssicAddress = address(router.RouterSSIC());
     console.log("worldAddress ", worldAddress);
     console.log("routerAddress ", routerAddress);
     console.log("sorAddress ", sorAddress);
+    console.log("smicAddress", smicAddress);
+    console.log("tlsicAddress", tlsicAddress);
+    console.log("ssicAddress", ssicAddress);
     console.log("DxDmprAddress ", DxDmprAddress);
     console.log("DxDmrsAddress ", DxDmrsAddress);
     console.log("DxDmapcAddress ", DxDmapcAddress);
     console.log("DxDsscAddress ", DxDsscAddress);
     console.log("DxDmpsAddress ", DxDmpsAddress);
 
-    vm.prank(0x1804c8AB1F12E6bbf3894d4083f33e07309d1f38);
-    router.execute(abi.encode(1, DxDmps, abi.encode(60, "pepe", true)));
+    // vm.prank(0x1804c8AB1F12E6bbf3894d4083f33e07309d1f38);
+    // router.execute(abi.encode(1, DxDmps, abi.encode(60, "pepe", true)));
 
-    // vm.stopBroadcast();
+    vm.stopBroadcast();
+    console.log("worldAddress ", worldAddress);
+    console.log("routerAddress ", routerAddress);
+    console.log("sorAddress ", sorAddress);
+    console.log("smicAddress", smicAddress);
+    console.log("tlsicAddress", tlsicAddress);
+    console.log("ssicAddress", ssicAddress);
+    console.log("DxDmprAddress ", DxDmprAddress);
+    console.log("DxDmrsAddress ", DxDmrsAddress);
+    console.log("DxDmapcAddress ", DxDmapcAddress);
+    console.log("DxDsscAddress ", DxDsscAddress);
+    console.log("DxDmpsAddress ", DxDmpsAddress);
   }
 
   // function testTemp() public {
@@ -143,4 +160,11 @@ contract DxDdeploy is Script {
   //     assertEq(_u.pointsString, 10, "Points string err");
   //     assertEq(_u.totalPoints, 100, "Total points err");
   //   }
+
+  // run using
+  /**
+forge script src/esp-contracts/examples/DxDAO/script/DxDSignalScript.s.sol:DxDSignalScript --rpc-url goerli --broadcast --private-key $GOERLI_PRIVATE_KEY
+
+forge script src/esp-contracts/examples/DxDAO/deploy/DxDdeploy.s.sol:DxDdeploy --rpc-url $GNOSIS_RPC_URL --broadcast --private-key $GNOSIS_PRIVATE_KEY
+ */
 }
